@@ -111,8 +111,8 @@ unsigned long led_rx_on_time = 0;
 //============================================================
 
 Reload arm(
-    12,      // motor_1 PWM
-    13,      // motor_1 DIR
+    13,      // motor_1 PWM
+    12,      // motor_1 DIR
     14,     // limit open LS_1
     15      // limit close LS_2
 );
@@ -136,8 +136,8 @@ Collect rack(
     17,     // limit_4
     20,     // limit_5
     21,     // limit_6
-    A2,     // limit_7
-    A1      // limit_8
+    A10,     // limit_7
+    A9      // limit_8
 );
 
 
@@ -169,8 +169,6 @@ ChargeState chargeState = Charge_RELOAD_Can;
 uint8_t buttonA = 0;
 uint8_t buttonB = 0;
 uint8_t buttonX = 0;
-
-uint8_t previousButtonA = 0;
 
 
 //============================================================
@@ -299,8 +297,6 @@ void loop()
         // A / B / X を取得
         //======================================================
 
-        previousButtonA = buttonA;
-
         buttonA = joy_msg.data.buttonA;
         buttonB = joy_msg.data.buttonB;
         buttonX = joy_msg.data.buttonX;
@@ -339,9 +335,10 @@ void loop()
     {
         arm.update();
 
-
+        // 補充完了
         if (arm.isMoving() == false)
         {
+            //補充可能状態
             chargeState = Charge_RELOAD_Can;
         }
     }
@@ -357,14 +354,15 @@ void loop()
         // コントローラーA → 補充
         //====================================================
 
-        if (buttonA == 1 && previousButtonA == 0)
+        if (buttonA == 1)
         {
             arm.start();
 
+            //(状態遷移)
             chargeState = Charge_RELOAD_Moving;
         }
 
-
+        
         //====================================================
         // コントローラーB → 装填
         //====================================================
