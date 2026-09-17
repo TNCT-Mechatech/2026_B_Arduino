@@ -10,7 +10,9 @@ Reload::Reload(
       limitOpenPin(limitOpenPin),
       limitClosePin(limitClosePin),
       armOpen(false),
-      armMoving(false)
+      armMoving(false),
+      releasing(false),
+      releaseStartTime(0)
 {
 }
 
@@ -26,6 +28,27 @@ void Reload::begin()
 
 void Reload::update()
 {
+    // 閉じた後の負荷抜き動作
+    if(releasing == true)
+    {
+        //開く
+        motor.drive(MOTOR_SPEED);
+
+        if(millis() - releaseStartTime >= RELEASE_TIME)
+        {
+            motor.stop();
+
+            releasing = false;
+            armMoving = false;
+
+            //閉じている
+            armOpen = false;
+        }
+
+        return;
+    }
+
+
     // 動作中
     if (armMoving == true)
     {
@@ -52,8 +75,9 @@ void Reload::update()
             {
                 motor.stop();
 
-                armOpen = false;
-                armMoving = false;
+                //閉じたので負荷抜き動作へ
+                releasing = true;
+                releaseStartTime = millis();
             }
         }
     }
@@ -86,5 +110,5 @@ bool Reload::isOpen()
 
 bool Reload::isMoving()
 {
-    return armMoving;
+    return armMoving || releasing;
 }

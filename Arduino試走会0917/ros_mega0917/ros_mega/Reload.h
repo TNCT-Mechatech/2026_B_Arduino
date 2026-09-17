@@ -33,6 +33,11 @@ private:
     bool armOpen;
     bool armMoving;
 
+    bool releasing;
+    unsigned long releaseStartTime;
+
+    // 閉じたとき後に逆回転する時間
+    static const unsigned long RELEASE_TIME = 200; //(ms)
     static const int MOTOR_SPEED = 255; //(最速に調整2026-08-31)
 };
 

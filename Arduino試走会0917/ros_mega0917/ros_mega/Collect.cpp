@@ -1,5 +1,5 @@
 #include "Collect.h"
-//0905
+//0916
 
 Collect ::Collect(
   uint8_t motor_3PwmPin,
@@ -84,7 +84,7 @@ void Collect::update()
   {
     if(digitalRead(limit_4Pin) == HIGH)
     {
-      motor_3.drive(-50);
+      motor_3.drive(50);
     }
     else
     {
@@ -93,7 +93,7 @@ void Collect::update()
 
     if(digitalRead(limit_6Pin) == HIGH)
     {
-      motor_4.drive(-50);
+      motor_4.drive(50);
     }
     else
     {
@@ -128,7 +128,7 @@ void Collect::update()
   {
     if(digitalRead(limit_3Pin) == HIGH)
     {
-      motor_3.drive(50);
+      motor_3.drive(-50);
     }
     else
     {
@@ -137,7 +137,7 @@ void Collect::update()
 
     if(digitalRead(limit_5Pin) == HIGH)
     {
-      motor_4.drive(50);
+      motor_4.drive(-50);
     }
     else
     {

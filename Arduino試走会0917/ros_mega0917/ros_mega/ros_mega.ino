@@ -1,14 +1,21 @@
 //============================================================
 // ros_mega.ino
 // 26robocon-B
-// 補充・装填・回収機構
-// 2026-09-10
+// 補充・回収機構
+// 2026-09-16
 // kanayama syunya
+// 
+// (受信)Pi >> Mega
+// A = 補充
+// X = 回収
+// B = 
+// Y = 射出モード切り替え
+// L1= 発射
+// Leonardo >> Mega
+// LsShootUP = 射出機構＿角度変更の上のリミットスイッチ
+// LsShootDOWN = 射出機構＿角度変更の下のリミットスイッチ
 //
-// Raspberry Pi → Arduino Mega
-// A / B / X ボタンを受信
-//
-// Arduino Mega → Raspberry Pi
+// (返信)Mega >> Pi
 // A / B / X ボタンを返信
 //
 // LED
@@ -16,7 +23,7 @@
 // A6 : Raspberry Piからの通信受信確認
 //
 //ピン配置修正確認済み
-//09-10の試走会に調整
+//09-16の試走会に調整
 //補充機構と装填機構のプログラムが連動しているのを補充機構だけのものにする
 //============================================================
 
@@ -40,6 +47,9 @@ typedef struct
     uint8_t buttonB;
     uint8_t buttonA;
     uint8_t buttonX;
+    
+    uint8_t limitShootUP;
+    uint8_t limitShootDOWN;
 
 } MEGA_t;
 
@@ -103,7 +113,7 @@ unsigned long led_rx_on_time = 0;
 //============================================================
 // カム上の板の水平を検知
 //============================================================
-//const uint8_t limit_9 = A0; //  ピン配置修正した0905
+//const uint8_t limit_9 = A0; //  ピン配置修正した0916
 
 
 //============================================================
@@ -136,8 +146,8 @@ Collect rack(
     17,     // limit_4
     20,     // limit_5
     21,     // limit_6
-    A10,     // limit_7
-    A9      // limit_8
+    A2,     // limit_7
+    A1      // limit_8
 );
 
 
@@ -148,7 +158,7 @@ Collect rack(
 enum ChargeState
 {
     Charge_RELOAD_Can,
-    Charge_RELOAD_Moving,
+    Charge_RELOAD_Moving
     //Charge_RELOAD_UP
 };
 
@@ -170,6 +180,8 @@ uint8_t buttonA = 0;
 uint8_t buttonB = 0;
 uint8_t buttonX = 0;
 
+uint8_t limitShootUP;
+uint8_t limitShootDOWN;
 
 //============================================================
 // setup
