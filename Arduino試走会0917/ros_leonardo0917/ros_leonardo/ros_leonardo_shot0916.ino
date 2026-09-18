@@ -226,7 +226,7 @@ void setup()
     // Raspberry Pi通信
     //=====
 
-    Serial.begin(115200);
+    Serial.begin(230400);
 
 
     //=====
